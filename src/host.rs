@@ -1,44 +1,50 @@
-use std::net::{UdpSocket, SocketAddr};
-use std::io::Error;
 use super::peer::Peer;
+use std::io::Error;
+use std::net::{SocketAddr, ToSocketAddrs, UdpSocket};
+use std::rc::Rc;
 
 const DEFAULT_MTU: usize = 1400;
 
-pub struct Host <'a> {
+pub struct Host<'a> {
     socket: UdpSocket,
     // bandwidth limitation unimplemented
     mtu: usize,
     random_seed: u32,
-    peers: Vec<Peer<'a>>,
+    peers: Vec<Rc<Peer<'a>>>,
     // channel limit unimplemented
 }
 
-impl <'a> Host <'a> {
-    fn new(address: Option<SocketAddr>) -> Result<Host<'a>, Error> {
-        let socket = match address {
-            Some(addr) => UdpSocket::bind(addr)?,
-            None => UdpSocket::bind("0.0.0.0:0")? // this should let the OS choose
-        };
+impl<'a> Host<'a> {
+    pub fn new<A: ToSocketAddrs>(address: Option<A>) -> Result<Host<'a>, Error> {
+        let socket = UdpSocket::bind(address.unwrap())?;
         return Ok(Host {
-            socket, 
+            socket,
             mtu: DEFAULT_MTU,
             random_seed: 0,
             peers: Vec::new(),
-        })
+        });
     }
 
-    pub fn make_client() -> Result<Host<'a>, Error> {
-        Host::new(None) // TODO: some way of getting the current struct?
+    pub fn connect(
+        &mut self,
+        address: SocketAddr,
+        channel_count: u8,
+        connect_data: u32,
+    ) -> Rc<Peer> {
+        let peer = Rc::new(Peer::new(address, self));
+        self.peers.push(peer.clone());
+        peer
     }
 
-    pub fn make_server(address: SocketAddr) -> Result<Host<'a>, Error> {
-        Host::new(Some(address)) // TODO: some way of getting the current struct?
+    pub fn send_queued_packets(&mut self, mut peer: Peer) -> Result<(), Error> {
+        let command = peer.outgoing_commands.pop_front().unwrap();
+        self.socket.send(command.serialize(0, 0xFF).as_slice())?;
+        Ok(())
     }
 
-    pub fn connect(&mut self, address: SocketAddr, channel_count: u8, connect_data: u32) {
-        let peer = Peer::new(address, self);
-        self.peers.push(peer);
+    pub fn service() {}
+
+    pub fn mtu(&self) -> usize {
+        self.mtu
     }
-    
-    pub fn mtu(&self) -> usize { self.mtu }
 }

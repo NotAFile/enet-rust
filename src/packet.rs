@@ -1,12 +1,18 @@
-pub struct Packet {
+pub struct Packet<'a> {
     reliable: bool,
     sequenced: bool,
-    data: Vec<u8>,
+    data: &'a [u8],
 }
 
-impl Packet {
-    pub fn new(data: Vec<u8>, reliable: bool, sequenced: bool) -> Packet {
-        Packet {data, reliable, sequenced}
+impl<'a> Packet<'a> {
+    pub fn new(data: &'a [u8], reliable: bool, sequenced: bool) -> Packet<'a> {
+        Packet {
+            data,
+            reliable,
+            sequenced,
+        }
     }
-    pub fn len(&self) -> usize { self.data.len() }
+    pub fn len(&self) -> usize {
+        self.data.len()
+    }
 }
