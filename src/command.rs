@@ -42,10 +42,10 @@ impl CommandKind {
     }
 
     pub fn serialize(&self, reliable_sequence_no: u16, channel_id: u8) -> Vec<u8> {
-        let header = CommandHeader{
+        let header = CommandHeader {
             command_id: self.get_id(),
             reliable_sequence_no,
-            channel_id
+            channel_id,
         };
         let mut bytes = bincode::serialize(&header).unwrap();
         bytes.extend(bincode::serialize(&self).unwrap());
@@ -225,18 +225,24 @@ impl Command for SendUnreliableFragmentCommand {
 
 #[test]
 fn test_command_serialization() {
-    println!("{:?}", ThrottleConfigureCommand{
-        packet_throttle_interval: 12,
-        packet_throttle_acceleration: 12,
-        packet_throttle_deceleration: 12,
-    }.serialize())
+    println!(
+        "{:?}",
+        ThrottleConfigureCommand {
+            packet_throttle_interval: 12,
+            packet_throttle_acceleration: 12,
+            packet_throttle_deceleration: 12,
+        }.serialize()
+    )
 }
 
 #[test]
 fn test_commandkind_serialization() {
-    println!("{:?}", CommandKind::ThrottleConfigure(ThrottleConfigureCommand{
-        packet_throttle_interval: 12,
-        packet_throttle_acceleration: 12,
-        packet_throttle_deceleration: 12,
-    }).serialize())
+    println!(
+        "{:?}",
+        CommandKind::ThrottleConfigure(ThrottleConfigureCommand {
+            packet_throttle_interval: 12,
+            packet_throttle_acceleration: 12,
+            packet_throttle_deceleration: 12,
+        }).serialize()
+    )
 }
