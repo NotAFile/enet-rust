@@ -5,21 +5,28 @@ use std::rc::Rc;
 
 const DEFAULT_MTU: usize = 1400;
 
-pub struct Host<'a> {
+#[derive(Debug, Copy, Clone)]
+pub struct HostConfig {
+    pub mtu: usize,
+}
+
+pub struct Host {
     socket: UdpSocket,
     // bandwidth limitation unimplemented
-    mtu: usize,
+    config: HostConfig,
     random_seed: u32,
-    peers: Vec<Rc<Peer<'a>>>,
+    peers: Vec<Rc<Peer>>,
     // channel limit unimplemented
 }
 
-impl<'a> Host<'a> {
-    pub fn new<A: ToSocketAddrs>(address: Option<A>) -> Result<Host<'a>, Error> {
-        let socket = UdpSocket::bind(address.unwrap())?;
+impl Host {
+    pub fn new<A: ToSocketAddrs>(address: A) -> Result<Host, Error> {
+        let socket = UdpSocket::bind(address)?;
         return Ok(Host {
             socket,
-            mtu: DEFAULT_MTU,
+            config: HostConfig {
+                mtu: DEFAULT_MTU,
+            },
             random_seed: 0,
             peers: Vec::new(),
         });
@@ -30,10 +37,10 @@ impl<'a> Host<'a> {
         address: SocketAddr,
         channel_count: u8,
         connect_data: u32,
-    ) -> Rc<Peer> {
-        let peer = Rc::new(Peer::new(address, self));
-        self.peers.push(peer.clone());
-        peer
+    ) -> &Peer {
+        let peer = Rc::new(Peer::new(address, self.config));
+        self.peers.push(peer);
+        &self.peers.last().unwrap()
     }
 
     pub fn send_queued_packets(&mut self, mut peer: Peer) -> Result<(), Error> {
@@ -42,9 +49,11 @@ impl<'a> Host<'a> {
         Ok(())
     }
 
-    pub fn service() {}
+    pub fn service(&mut self) -> Result<(), Error> {
+        let mut buf = [0; 1024];
+        let (amt, src) = self.socket.recv_from(&mut buf)?;
 
-    pub fn mtu(&self) -> usize {
-        self.mtu
+        println!("{:?}: {:?}", amt, src);
+        Ok(())
     }
 }

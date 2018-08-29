@@ -3,7 +3,7 @@ use std::collections::VecDeque;
 use std::io::Error;
 use std::net::SocketAddr;
 
-use super::{Channel, Command, Host, Packet};
+use super::{Channel, Command, HostConfig, Packet};
 use command;
 use command::CommandKind;
 
@@ -20,22 +20,22 @@ enum ConnectionState {
     Zombie,
 }
 
-pub struct Peer<'a> {
+pub struct Peer {
     channels: Vec<Channel>,
     state: ConnectionState,
     address: SocketAddr,
     mtu: usize,
-    pub outgoing_commands: VecDeque<&'a CommandKind>,
-    pub incoming_commands: VecDeque<&'a CommandKind>,
+    pub outgoing_commands: VecDeque<CommandKind>,
+    pub incoming_commands: VecDeque<CommandKind>,
 }
 
-impl<'a> Peer<'a> {
-    pub fn new(address: SocketAddr, host: &Host) -> Peer<'a> {
+impl Peer {
+    pub fn new(address: SocketAddr, config: HostConfig) -> Peer {
         Peer {
             address,
             channels: Vec::new(),
             state: ConnectionState::Disconnected,
-            mtu: host.mtu(),
+            mtu: config.mtu,
             outgoing_commands: VecDeque::new(),
             incoming_commands: VecDeque::new(),
         }
@@ -69,8 +69,12 @@ impl<'a> Peer<'a> {
         }
     }
 
+    pub fn in_transit(&self) -> bool {
+        true
+    }
+
     pub fn ping(&mut self) {
         self.outgoing_commands
-            .push_back(&CommandKind::Ping(command::PingCommand {}));
+            .push_back(CommandKind::Ping(command::PingCommand {}));
     }
 }

@@ -243,6 +243,6 @@ fn test_commandkind_serialization() {
             packet_throttle_interval: 12,
             packet_throttle_acceleration: 12,
             packet_throttle_deceleration: 12,
-        }).serialize()
+        }).serialize(1, 3)
     )
 }
