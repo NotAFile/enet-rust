@@ -21,8 +21,6 @@ pub const ENET_VERSION: (u8, u8, u8) = (1, 3, 13);
 
 #[cfg(test)]
 mod tests {
-    
-    
 
     #[test]
     fn enet_example_server() {

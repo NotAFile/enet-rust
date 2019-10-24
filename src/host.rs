@@ -24,9 +24,7 @@ impl Host {
         let socket = UdpSocket::bind(address)?;
         return Ok(Host {
             socket,
-            config: HostConfig {
-                mtu: DEFAULT_MTU,
-            },
+            config: HostConfig { mtu: DEFAULT_MTU },
             random_seed: 0,
             peers: Vec::new(),
         });
