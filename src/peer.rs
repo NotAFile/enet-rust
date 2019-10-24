@@ -3,9 +3,9 @@ use std::collections::VecDeque;
 use std::io::Error;
 use std::net::SocketAddr;
 
-use super::{Channel, Command, HostConfig, Packet};
-use command;
-use command::CommandKind;
+use super::{Channel, HostConfig, Packet};
+use crate::command;
+use crate::command::CommandKind;
 
 enum ConnectionState {
     Disconnected,
@@ -59,7 +59,7 @@ impl Peer {
 
             if packet.len() > frag_length {
                 // Enet packet does not fit within one UDP packet, we need to fragment
-                let frag_count = packet.len() + frag_length - 1;
+                let _frag_count = packet.len() + frag_length - 1;
 
                 // TODO: check max fragment count
             }

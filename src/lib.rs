@@ -11,18 +11,18 @@ mod host;
 mod packet;
 mod peer;
 
-pub use channel::*;
-pub use command::Command;
-pub use host::*;
-pub use packet::*;
-pub use peer::*;
+pub use crate::channel::*;
+pub use crate::command::Command;
+pub use crate::host::*;
+pub use crate::packet::*;
+pub use crate::peer::*;
 
 pub const ENET_VERSION: (u8, u8, u8) = (1, 3, 13);
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use std::net::{IpAddr, SocketAddr};
+    
+    
 
     #[test]
     fn enet_example_server() {

@@ -35,8 +35,8 @@ impl Host {
     pub fn connect(
         &mut self,
         address: SocketAddr,
-        channel_count: u8,
-        connect_data: u32,
+        _channel_count: u8,
+        _connect_data: u32,
     ) -> Rc<Peer> {
         let peer = Rc::new(Peer::new(address, self.config));
         self.peers.push(peer);
