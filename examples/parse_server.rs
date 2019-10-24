@@ -1,4 +1,4 @@
-use enet::command::{CommandKind, ConnectCommand};
+use enet::command::{CommandKind, ConnectCommand, ProtocolHeader};
 use std::net::{UdpSocket};
 use std::error::Error;
 use std::io::Cursor;
