@@ -95,18 +95,18 @@ impl Command for AknowledgeCommand {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ConnectCommand {
     outgoing_peer_id: u16,
-    incoming_session_id: u8,
-    outgoing_session_id: u8,
-    mtu: u32,
-    window_size: u32,
-    channel_count: u32,
-    incoming_bandwidth: u32,
-    outgoing_bandwidth: u32,
-    packet_throttle_interval: u32,
-    packet_throttle_acceleration: u32,
-    packet_throttle_deceleration: u32,
-    connection_id: u32,
-    initial_data: u32,
+    incoming_session_id: u8, // 2
+    outgoing_session_id: u8, // 3
+    mtu: u32, // 4
+    window_size: u32, // 8
+    channel_count: u32, // 12
+    incoming_bandwidth: u32, // 16
+    outgoing_bandwidth: u32, // 20
+    packet_throttle_interval: u32, // 24
+    packet_throttle_acceleration: u32, // 28
+    packet_throttle_deceleration: u32, // 32
+    connection_id: u32, // 36
+    initial_data: u32, // 40
 }
 
 impl Command for ConnectCommand {
