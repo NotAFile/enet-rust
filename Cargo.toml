@@ -2,6 +2,7 @@
 name = "enet"
 version = "0.1.0"
 authors = ["notafile"]
+edition = "2018"
 
 [dependencies]
 bincode = "1.0.1"
