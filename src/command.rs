@@ -4,6 +4,15 @@ use bincode;
 use serde;
 
 #[derive(Serialize, Deserialize, Debug)]
+pub struct ProtocolHeader {
+    FlagsSessIDPeerID: u16,
+    Time: u16,
+    CommandIDFlags: u8,
+    ChannelID: u8,
+    ReliableSequenceNo: u16,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
 #[serde(untagged)]
 pub enum CommandKind {
     Empty(EmptyCommand),
