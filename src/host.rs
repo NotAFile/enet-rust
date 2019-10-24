@@ -37,10 +37,10 @@ impl Host {
         address: SocketAddr,
         channel_count: u8,
         connect_data: u32,
-    ) -> &Peer {
+    ) -> Rc<Peer> {
         let peer = Rc::new(Peer::new(address, self.config));
         self.peers.push(peer);
-        &self.peers.last().unwrap()
+        self.peers.last().unwrap().clone()
     }
 
     pub fn send_queued_packets(&mut self, mut peer: Peer) -> Result<(), Error> {
