@@ -5,11 +5,19 @@ use serde;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ProtocolHeader {
-    FlagsSessIDPeerID: u16,
-    Time: u16,
-    CommandIDFlags: u8,
-    ChannelID: u8,
-    ReliableSequenceNo: u16,
+    /// two bits flags: sentTime, compressed
+    /// two bits sessionid
+    /// 12 bits peerid
+    flags_sessid_peerid: u16,
+
+    /// optional, only sent if sentTime flag present
+    time: u16,
+
+    /// four bits flags
+    /// four bits command ID
+    command_id_flags: u8,
+    channel_id: u8,
+    reliable_sequence_no: u16,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

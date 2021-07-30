@@ -24,7 +24,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
         let mut header_rdr = Cursor::new(&buf[..8]);
 
-        let _connect: ProtocolHeader = bincode_ser.deserialize(&buf[8..])?;
+        let header: ProtocolHeader = bincode_ser.deserialize(&buf[..8])?;
         println!("      HDR: {}", to_hex_string(&buf[..8]));
         let peerID = header_rdr.read_u16::<BE>()?;
         println!(
